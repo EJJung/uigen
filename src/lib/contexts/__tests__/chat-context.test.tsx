@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor, act, cleanup } from "@testing-library/react";
+import { render, screen, waitFor, act, cleanup, renderHook } from "@testing-library/react";
 import { ChatProvider, useChat } from "../chat-context";
 import { useFileSystem } from "../file-system-context";
 import { useChat as useAIChat } from "@ai-sdk/react";
@@ -195,5 +195,57 @@ describe("ChatContext", () => {
     onToolCallHandler({ toolCall });
 
     expect(mockHandleToolCall).toHaveBeenCalledWith(toolCall);
+  });
+
+  test("does not track anonymous work when messages array is empty", async () => {
+    // Default mockUseAIChat has messages: [] — the effect guard (messages.length > 0) should block the call
+    render(
+      <ChatProvider>
+        <TestComponent />
+      </ChatProvider>
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    expect(anonTracker.setHasAnonWork).not.toHaveBeenCalled();
+  });
+
+  test("passes input value through from useAIChat", () => {
+    (useAIChat as any).mockReturnValue({
+      ...mockUseAIChat,
+      input: "my draft message",
+    });
+
+    render(
+      <ChatProvider>
+        <TestComponent />
+      </ChatProvider>
+    );
+
+    const textarea = screen.getByTestId("input") as HTMLTextAreaElement;
+    expect(textarea.value).toBe("my draft message");
+  });
+
+  test("useChat throws when used outside ChatProvider", () => {
+    expect(() => renderHook(() => useChat())).toThrow(
+      "useChat must be used within a ChatProvider"
+    );
+  });
+
+  test("sends serialized file system in the request body", () => {
+    const serialized = { "/App.jsx": { type: "file", content: "test" } };
+    mockFileSystem.serialize.mockReturnValue(serialized as any);
+
+    render(
+      <ChatProvider>
+        <TestComponent />
+      </ChatProvider>
+    );
+
+    expect(useAIChat).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({ files: serialized }),
+      })
+    );
   });
 });
