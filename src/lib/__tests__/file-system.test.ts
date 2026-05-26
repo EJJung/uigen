@@ -675,3 +675,143 @@ test("rename handles empty directories", () => {
   expect(fs.exists("/moved-empty-dir")).toBe(true);
   expect(fs.getNode("/moved-empty-dir")?.type).toBe("directory");
 });
+
+// ── getNode ──────────────────────────────────────────────────────────────────
+
+test("getNode returns the file node for an existing file", () => {
+  const fs = new VirtualFileSystem();
+  fs.createFile("/test.txt", "hello");
+
+  const node = fs.getNode("/test.txt");
+  expect(node).not.toBeNull();
+  expect(node?.type).toBe("file");
+  expect(node?.name).toBe("test.txt");
+  expect(node?.path).toBe("/test.txt");
+  expect(node?.content).toBe("hello");
+});
+
+test("getNode returns the directory node for an existing directory", () => {
+  const fs = new VirtualFileSystem();
+  fs.createDirectory("/src");
+
+  const node = fs.getNode("/src");
+  expect(node).not.toBeNull();
+  expect(node?.type).toBe("directory");
+  expect(node?.name).toBe("src");
+  expect(node?.path).toBe("/src");
+});
+
+test("getNode returns null for a non-existent path", () => {
+  const fs = new VirtualFileSystem();
+  expect(fs.getNode("/nonexistent")).toBeNull();
+});
+
+test("getNode normalizes the path before lookup", () => {
+  const fs = new VirtualFileSystem();
+  fs.createFile("/test.txt", "content");
+
+  expect(fs.getNode("test.txt")).not.toBeNull();
+  expect(fs.getNode("//test.txt")).not.toBeNull();
+});
+
+// ── createDirectory (no auto-parent) ─────────────────────────────────────────
+
+test("createDirectory returns null when parent directory does not exist", () => {
+  const fs = new VirtualFileSystem();
+
+  const result = fs.createDirectory("/nonexistent/child");
+  expect(result).toBeNull();
+  expect(fs.exists("/nonexistent/child")).toBe(false);
+});
+
+// ── serialize ─────────────────────────────────────────────────────────────────
+
+test("serialize omits the children Map from directory nodes", () => {
+  const fs = new VirtualFileSystem();
+  fs.createDirectory("/src");
+  fs.createFile("/src/index.ts", "");
+
+  const serialized = fs.serialize();
+
+  expect(Object.prototype.hasOwnProperty.call(serialized["/src"], "children")).toBe(false);
+  expect(Object.prototype.hasOwnProperty.call(serialized["/"], "children")).toBe(false);
+});
+
+test("serialize omits content from directory nodes", () => {
+  const fs = new VirtualFileSystem();
+  fs.createDirectory("/src");
+
+  const serialized = fs.serialize();
+  expect(Object.prototype.hasOwnProperty.call(serialized["/src"], "content")).toBe(false);
+});
+
+// ── deserialize idempotency ───────────────────────────────────────────────────
+
+test("deserialize clears previous state on a second call", () => {
+  const fs = new VirtualFileSystem();
+  fs.deserialize({ "/old.txt": "old content" });
+
+  fs.deserialize({ "/new.txt": "new content" });
+
+  expect(fs.exists("/old.txt")).toBe(false);
+  expect(fs.readFile("/new.txt")).toBe("new content");
+});
+
+test("deserializeFromNodes clears previous state on a second call", () => {
+  const fs = new VirtualFileSystem();
+  fs.createFile("/original.txt", "original");
+
+  fs.deserializeFromNodes({
+    "/replacement.ts": {
+      type: "file",
+      name: "replacement.ts",
+      path: "/replacement.ts",
+      content: "replaced",
+    },
+  });
+
+  expect(fs.exists("/original.txt")).toBe(false);
+  expect(fs.readFile("/replacement.ts")).toBe("replaced");
+});
+
+// ── getAllFiles edge cases ─────────────────────────────────────────────────────
+
+test("getAllFiles returns an empty map for a fresh file system", () => {
+  const fs = new VirtualFileSystem();
+  expect(fs.getAllFiles().size).toBe(0);
+});
+
+// ── reset ─────────────────────────────────────────────────────────────────────
+
+test("reset clears all files and restores the root directory", () => {
+  const fs = new VirtualFileSystem();
+  fs.createFile("/test.txt", "content");
+  fs.createDirectory("/src");
+  fs.createFile("/src/index.ts", "export {}");
+
+  fs.reset();
+
+  expect(fs.exists("/test.txt")).toBe(false);
+  expect(fs.exists("/src")).toBe(false);
+  expect(fs.exists("/")).toBe(true);
+  expect(fs.getNode("/")?.type).toBe("directory");
+});
+
+test("reset leaves the file system usable for new operations", () => {
+  const fs = new VirtualFileSystem();
+  fs.createFile("/before.txt", "before");
+
+  fs.reset();
+
+  const file = fs.createFile("/after.txt", "after");
+  expect(file).not.toBeNull();
+  expect(fs.readFile("/after.txt")).toBe("after");
+});
+
+test("reset on an already-empty file system is a no-op", () => {
+  const fs = new VirtualFileSystem();
+  fs.reset();
+
+  expect(fs.exists("/")).toBe(true);
+  expect(fs.listDirectory("/")).toEqual([]);
+});
