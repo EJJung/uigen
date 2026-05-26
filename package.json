@@ -32,13 +32,40 @@
     "cmdk": "^1.1.1",
     "jose": "^6.0.11",
     "lucide-react": "^0.517.0",
-    "next": "15.3.3",
+    "next": "15.5.18",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^3.0.3",
     "server-only": "^0.0.1",
     "tailwind-merge": "^3.3.1"
+  },
+  "overrides": {
+    "@eslint/plugin-kit": ">=0.3.4",
+    "postcss": ">=8.5.10",
+    "ajv": ">=6.14.0",
+    "brace-expansion": "1.1.13",
+    "flatted": ">=3.4.2",
+    "js-yaml": ">=4.1.1",
+    "mdast-util-to-hast": ">=13.2.1",
+    "minimatch": "3.1.4",
+    "rollup": ">=4.58.1",
+    "tar": ">=7.5.11",
+    "vite": ">=6.4.2",
+    "ws": ">=8.20.1",
+    "@typescript-eslint/typescript-estree": {
+      "brace-expansion": "2.0.3",
+      "minimatch": "9.0.7"
+    },
+    "micromatch": {
+      "picomatch": "2.3.2"
+    },
+    "tinyglobby": {
+      "picomatch": "4.0.4"
+    },
+    "vitest": {
+      "picomatch": "4.0.4"
+    }
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -52,7 +79,7 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4.5.2",
     "eslint": "9.29.0",
-    "eslint-config-next": "15.3.4",
+    "eslint-config-next": "15.5.18",
     "jsdom": "^26.1.0",
     "prisma": "^6.10.1",
     "tailwindcss": "^4",
