@@ -1,0 +1,123 @@
+{
+  "project": "uigen",
+  "last_updated": "2026-07-03",
+  "rules": {
+    "single_active_feature": true,
+    "passing_requires_evidence": true,
+    "do_not_skip_verification": true
+  },
+  "status_legend": {
+    "not_started": "Work has not begun.",
+    "in_progress": "The feature is the current active task.",
+    "blocked": "Work cannot continue until a documented blocker is resolved.",
+    "passing": "Required verification has passed and evidence is recorded."
+  },
+  "features": [
+    {
+      "id": "core-001",
+      "name": "UI generation via chat",
+      "description": "User types a prompt, AI generates a React component via streaming tool calls, and the preview iframe renders the result using Babel Standalone.",
+      "priority": 1,
+      "area": "core",
+      "status": "passing",
+      "dependencies": [],
+      "verification": [
+        "npm test",
+        "Open the app, send a generation prompt, verify the preview iframe renders the component."
+      ],
+      "evidence": ["Initial commit — core generation pipeline working end-to-end (58b87de)"],
+      "notes": ""
+    },
+    {
+      "id": "auth-001",
+      "name": "User authentication",
+      "description": "Users can sign up and sign in via JWT stored in an httpOnly cookie. Passwords are hashed with bcrypt.",
+      "priority": 2,
+      "area": "auth",
+      "status": "passing",
+      "dependencies": [],
+      "verification": [
+        "npm test (includes auth.ts and use-auth hook tests)",
+        "Sign up with a new email; sign in with existing credentials."
+      ],
+      "evidence": [
+        "Add auth.ts unit tests (b48a617)",
+        "Add use-auth hook tests, fix 14 npm vulnerabilities (bda8d9f)"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "fs-001",
+      "name": "Virtual file system",
+      "description": "In-memory VirtualFileSystem supports create, edit, rename, delete, and serialization for request transport and DB storage.",
+      "priority": 3,
+      "area": "file-system",
+      "status": "passing",
+      "dependencies": ["core-001"],
+      "verification": [
+        "npm test (includes file-system.test.ts)"
+      ],
+      "evidence": ["Expand file-system.test.ts with missing coverage (7d9d9c1)"],
+      "notes": ""
+    },
+    {
+      "id": "chat-001",
+      "name": "Chat context streaming",
+      "description": "ChatContext intercepts AI tool calls via onToolCall and dispatches mutations to FileSystemContext, keeping client and server in sync.",
+      "priority": 4,
+      "area": "chat",
+      "status": "passing",
+      "dependencies": ["core-001", "fs-001"],
+      "verification": [
+        "npm test (includes chat-context tests)"
+      ],
+      "evidence": ["Expand chat-context tests with missing coverage (8cf21b2)"],
+      "notes": ""
+    },
+    {
+      "id": "project-001",
+      "name": "Project persistence",
+      "description": "Authenticated users' generated projects are saved to SQLite and reloaded from /[projectId] on page load.",
+      "priority": 5,
+      "area": "persistence",
+      "status": "passing",
+      "dependencies": ["auth-001", "fs-001"],
+      "verification": [
+        "Sign in, generate a component, reload the page.",
+        "Navigate to /[projectId] URL and verify the project restores."
+      ],
+      "evidence": ["Initial commit — project save/load working (58b87de)"],
+      "notes": ""
+    },
+    {
+      "id": "anon-001",
+      "name": "Anonymous user flow",
+      "description": "Anonymous users can generate components; work is preserved in sessionStorage and promoted to a saved project on sign-up.",
+      "priority": 6,
+      "area": "auth",
+      "status": "passing",
+      "dependencies": ["core-001", "auth-001"],
+      "verification": [
+        "Generate a component without signing in.",
+        "Sign up — verify work is preserved and a project is created."
+      ],
+      "evidence": ["Initial commit — anon flow via anon-work-tracker.ts (58b87de)"],
+      "notes": ""
+    },
+    {
+      "id": "export-001",
+      "name": "Code export / download",
+      "description": "User can download the generated virtual file system as a ZIP archive or copy individual file contents to the clipboard.",
+      "priority": 7,
+      "area": "ux",
+      "status": "not_started",
+      "dependencies": ["fs-001"],
+      "verification": [
+        "Click export button.",
+        "Verify a ZIP is downloaded or file content is copied correctly."
+      ],
+      "evidence": [],
+      "notes": "Next logical UX improvement after core flows are all passing."
+    }
+  ]
+}
