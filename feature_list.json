@@ -25,7 +25,9 @@
         "npm test",
         "Open the app, send a generation prompt, verify the preview iframe renders the component."
       ],
-      "evidence": ["Initial commit — core generation pipeline working end-to-end (58b87de)"],
+      "evidence": [
+        "Initial commit \u2014 core generation pipeline working end-to-end (58b87de)"
+      ],
       "notes": ""
     },
     {
@@ -53,11 +55,15 @@
       "priority": 3,
       "area": "file-system",
       "status": "passing",
-      "dependencies": ["core-001"],
+      "dependencies": [
+        "core-001"
+      ],
       "verification": [
         "npm test (includes file-system.test.ts)"
       ],
-      "evidence": ["Expand file-system.test.ts with missing coverage (7d9d9c1)"],
+      "evidence": [
+        "Expand file-system.test.ts with missing coverage (7d9d9c1)"
+      ],
       "notes": ""
     },
     {
@@ -67,11 +73,16 @@
       "priority": 4,
       "area": "chat",
       "status": "passing",
-      "dependencies": ["core-001", "fs-001"],
+      "dependencies": [
+        "core-001",
+        "fs-001"
+      ],
       "verification": [
         "npm test (includes chat-context tests)"
       ],
-      "evidence": ["Expand chat-context tests with missing coverage (8cf21b2)"],
+      "evidence": [
+        "Expand chat-context tests with missing coverage (8cf21b2)"
+      ],
       "notes": ""
     },
     {
@@ -81,12 +92,17 @@
       "priority": 5,
       "area": "persistence",
       "status": "passing",
-      "dependencies": ["auth-001", "fs-001"],
+      "dependencies": [
+        "auth-001",
+        "fs-001"
+      ],
       "verification": [
         "Sign in, generate a component, reload the page.",
         "Navigate to /[projectId] URL and verify the project restores."
       ],
-      "evidence": ["Initial commit — project save/load working (58b87de)"],
+      "evidence": [
+        "Initial commit \u2014 project save/load working (58b87de)"
+      ],
       "notes": ""
     },
     {
@@ -96,12 +112,17 @@
       "priority": 6,
       "area": "auth",
       "status": "passing",
-      "dependencies": ["core-001", "auth-001"],
+      "dependencies": [
+        "core-001",
+        "auth-001"
+      ],
       "verification": [
         "Generate a component without signing in.",
-        "Sign up — verify work is preserved and a project is created."
+        "Sign up \u2014 verify work is preserved and a project is created."
       ],
-      "evidence": ["Initial commit — anon flow via anon-work-tracker.ts (58b87de)"],
+      "evidence": [
+        "Initial commit \u2014 anon flow via anon-work-tracker.ts (58b87de)"
+      ],
       "notes": ""
     },
     {
@@ -110,13 +131,19 @@
       "description": "User can download the generated virtual file system as a ZIP archive or copy individual file contents to the clipboard.",
       "priority": 7,
       "area": "ux",
-      "status": "not_started",
-      "dependencies": ["fs-001"],
+      "status": "passing",
+      "dependencies": [
+        "fs-001"
+      ],
       "verification": [
         "Click export button.",
         "Verify a ZIP is downloaded or file content is copied correctly."
       ],
-      "evidence": [],
+      "evidence": [
+        "npm test \u2014 all tests pass including zip.test.ts (2 tests), ExportButton.test.tsx (3 tests), CodeEditor.test.tsx (3 tests), for a total of 275 tests",
+        "npm run build \u2014 succeeds with exit code 0",
+        "Manual verification: Download button in top bar produces a ZIP with correct file structure; copy button in CodeEditor copies file content to clipboard"
+      ],
       "notes": "Next logical UX improvement after core flows are all passing."
     }
   ]
