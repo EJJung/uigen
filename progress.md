@@ -43,6 +43,6 @@
 - **Files touched across export-001 implementation (4 commits prior to this session):**
   - Task 1 (71eac03): `src/lib/export/zip.ts` (ZIP creation utility), `src/lib/export/__tests__/zip.test.ts`
   - Task 2 (e0e9702): `src/components/ExportButton.tsx`, `src/components/__tests__/ExportButton.test.tsx`
-  - Task 3 (d2f85fc): `src/components/TopBar.tsx` (wired ExportButton)
+  - Task 3 (d2f85fc): `src/app/main-content.tsx` (wired ExportButton into the top bar)
   - Task 4 (48fa8ed): `src/components/editor/CodeEditor.tsx` (added copy-to-clipboard toolbar), `src/components/editor/__tests__/CodeEditor.test.tsx`
 - **Next best step:** All MVP features complete. Future work may include UX refinements or additional export formats.
