@@ -3,12 +3,12 @@
 ## Current State
 
 **Last Updated:** 2026-07-03
-**Current Objective:** export-001 (code export / download feature).
-**Recommended Next Step:** Implement ZIP download + copy-to-clipboard for the virtual file system.
+**Current Objective:** None — export-001 complete. All MVP features passing.
+**Recommended Next Step:** Future work; all core and UX features verified and stable.
 
-- **What is verified:** Core generation, auth, VFS, chat context, project persistence, anonymous flow, and the full test suite (267/267) — passing as of 2026-07-03.
-- **What is in progress:** export-001.
-- **Current blocker:** None for export-001. Known unrelated issue: `npm run lint` fails with an ESLint/ajv internal error (`Cannot set properties of undefined (setting 'defaultMeta')`, `NOT SUPPORTED: option missingRefs`) — a tooling/version-compatibility problem, not caused by any file content. `npm run build` still succeeds (exit 0) despite this. Needs separate investigation later — out of scope for export-001.
+- **What is verified:** Core generation, auth, VFS, chat context, project persistence, anonymous flow, export (ZIP download + copy-to-clipboard) — all tests passing (275/275) as of 2026-07-03.
+- **What is in progress:** None.
+- **Current blocker:** None for active work. Pre-existing lint issue (ESLint/ajv error unrelated to codebase) documented but out of scope.
 
 ## Session Log
 
@@ -29,3 +29,20 @@
 - **Verification run:** `npm test` — 267/267 passing. `npm run build` — succeeds (exit 0).
 - **Known risk / unresolved:** `npm run lint` fails with an ESLint/ajv internal error unrelated to this fix (see blocker note above). Noted, not fixed — out of scope.
 - **Next best step:** Implement export-001 (ZIP download of VFS + per-file copy-to-clipboard).
+
+### Session 003 — 2026-07-03
+
+- **Goal:** Complete export-001 verification and mark feature as passing.
+- **Completed:** Ran full verification suite on export-001 implementation:
+  - `npm test` — 275/275 tests passing (includes new zip.test.ts, ExportButton.test.tsx, CodeEditor copy-to-clipboard toolbar tests)
+  - `npm run build` — succeeded with exit code 0
+  - `npm run lint` — confirmed ESLint/ajv error matches pre-existing known issue (not introduced by export-001)
+  - Updated feature_list.json: export-001 status changed from `in_progress` to `passing` with verification evidence
+- **Verification run:** All 275 tests pass. Build succeeds. Lint error signature matches documented pre-existing issue.
+- **Known risk / unresolved:** Pre-existing lint failure (`Cannot set properties of undefined (setting 'defaultMeta')`, `NOT SUPPORTED: option missingRefs`) remains unresolved — confirmed not caused by export-001 implementation.
+- **Files touched across export-001 implementation (4 commits prior to this session):**
+  - Task 1 (71eac03): `src/lib/export/zip.ts` (ZIP creation utility), `src/lib/export/__tests__/zip.test.ts`
+  - Task 2 (e0e9702): `src/components/ExportButton.tsx`, `src/components/__tests__/ExportButton.test.tsx`
+  - Task 3 (d2f85fc): `src/components/TopBar.tsx` (wired ExportButton)
+  - Task 4 (48fa8ed): `src/components/editor/CodeEditor.tsx` (added copy-to-clipboard toolbar), `src/components/editor/__tests__/CodeEditor.test.tsx`
+- **Next best step:** All MVP features complete. Future work may include UX refinements or additional export formats.
