@@ -110,7 +110,7 @@
       "description": "User can download the generated virtual file system as a ZIP archive or copy individual file contents to the clipboard.",
       "priority": 7,
       "area": "ux",
-      "status": "not_started",
+      "status": "in_progress",
       "dependencies": ["fs-001"],
       "verification": [
         "Click export button.",
